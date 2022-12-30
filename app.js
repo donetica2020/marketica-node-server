@@ -8,12 +8,13 @@ const cors = require('cors');
 app.use(cors())
 app.use(express.json())
 
+const port = process.env.port || 3000;
+
 const dburi = `mongodb+srv://donetica2020:Alwaysthesun2020@cluster0.y1vng.mongodb.net/marketica?retryWrites=true&w=majority`;
 
 mongoose.connect(dburi, { useNewUrlParser: true, useUnifiedTopology: true })
     .then((result) => {
-        app.listen(4000);
-        console.log('listening on 4000')
+        app.listen(port);
     })
     .catch(err => {
         console.log(err)
