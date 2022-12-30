@@ -8,7 +8,7 @@ const cors = require('cors');
 app.use(cors())
 app.use(express.json())
 
-const dburi = "mongodb+srv://donetica2020:Alwaysthesun2020@cluster0.y1vng.mongodb.net/marketica?retryWrites=true&w=majority";
+const dburi = `mongodb+srv://donetica2020:Alwaysthesun2020@cluster0.y1vng.mongodb.net/marketica?retryWrites=true&w=majority`;
 
 mongoose.connect(dburi, { useNewUrlParser: true, useUnifiedTopology: true })
     .then((result) => {
@@ -25,39 +25,96 @@ mongoose.connect(dburi, { useNewUrlParser: true, useUnifiedTopology: true })
 app.get('/all-org', (req, res) => {
     Organization.find().then((result) => {
         res.send(result);
-        res.end()
     }).catch(err => {
-        res.send('error')
+        res.send([])
     })
 })
 
 //search specific organization
 app.get('/search-org', (req, res) => {
+    console.log(req.body.name)
+    let name = req.body.name;
+    Organization.findOne({ name: name }, function (err, org) {
+        if (err) {
+            res.send([])
+        } else {
+            res.send(org)
+        }
+    })
+})
+app.get('/search-filter', (req, res) => {
+    if (req.body.continent !== undefined && req.body.country !== undefined) {
+        if (req.body.continent !== '' && req.body.country !== '') {
+            Organization.find({ continent: req.body.continent, country: req.body.country }).then(result => {
+                res.send(result)
+            }).catch(err => {
+                res.send([])
+            })
+        } else if (req.body.continent !== '' && req.body.country == '') {
+            Organization.find({ continent: req.body.continent }).then(result => {
+                res.send(result)
+            }).catch(err => {
+                res.send([])
+            })
+        } else if (req.body.continent == '' && req.body.country !== '') {
+            Organization.find({ country: req.body.country }).then(result => {
+                res.send(result)
+            }).catch(err => {
+                res.send([])
+            })
+        } else {
+            res.send([])
+        }
+    } else {
+        res.send([])
+    }
 
 })
+
 //save organization to pending
 app.post('/save-org', (req, res) => {
-    const item = req.body.data
-    const org = new PendingOrganization({
-        name: item.name, email: item.email, mission: item.mission, address: item.address, country: item.country,
-        continent: item.continent, language: item.language, website: item.website, donationurl: item.donationurl
-    })
-    org.save()
-    res.send('success')
-    res.end();
+    if (req.body.data !== undefined) {
+        const item = req.body.data
+        const org = new PendingOrganization({
+            name: item.name !== undefined ? item.name : 'none',
+            email: item.email !== undefined ? item.email : 'none',
+            mission: item.mission !== undefined ? item.mission : 'none',
+            address: item.address !== undefined ? item.address : 'none',
+            country: item.country !== undefined ? item.country : 'none',
+            continent: item.continent !== undefined ? item.continent : 'none',
+            language: item.language !== undefined ? item.language : 'none',
+            website: item.website !== undefined ? item.website : 'none',
+            donationurl: item.donationurl !== undefined ? item.donationurl : 'none'
+        })
+        org.save()
+        res.send('success')
+    } else {
+        res.send('invalid org. data')
+    }
 })
 //save organinzation on approval
-app.post('./save-by-admin', (req, res) => {
-
+app.post('/save-by-admin', (req, res) => {
+    if (req.body.data !== undefined) {
+        const item = req.body.data
+        const org = new Organization({
+            name: item.name !== undefined ? item.name : 'none',
+            email: item.email !== undefined ? item.email : 'none',
+            mission: item.mission !== undefined ? item.mission : 'none',
+            address: item.address !== undefined ? item.address : 'none',
+            country: item.country !== undefined ? item.country : 'none',
+            continent: item.continent !== undefined ? item.continent : 'none',
+            language: item.language !== undefined ? item.language : 'none',
+            website: item.website !== undefined ? item.website : 'none',
+            donationurl: item.donationurl !== undefined ? item.donationurl : 'none'
+        })
+        org.save()
+        res.send('success')
+    } else {
+        res.send('invalid org. data')
+    }
 })
 
-app.get('/search-filter', (req, res) => {
-    Organization.find({ continent: 'South Asia' }).then(result => {
-        console.log(result)
-    }).catch(err => {
-        console.log(err)
-    })
-})
+
 
 
 
