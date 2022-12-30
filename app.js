@@ -1,29 +1,12 @@
 
 const express = require('express');
-const app = express();
-const port = process.env.port || 3000;
-
-
-app.get('/',(req,res) =>{
-    res.send('Hello world');
-    res.end()
-})
-
-app.listen(port,()=>{
-    console.log(port)
-})
-
-
-
-/*
-const express = require('express');
 const mongoose = require('mongoose');
 const Organization = require('./models/organization');
 const PendingOrganization = require('./models/pendingorganization');
 const app = express();
 const cors = require('cors');
 app.use(cors())
-//app.use(express.json())
+app.use(express.json())
 
 const dburi = "mongodb+srv://donetica2020:Alwaysthesun2020@cluster0.y1vng.mongodb.net/marketica?retryWrites=true&w=majority";
 
