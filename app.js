@@ -10,6 +10,12 @@ app.use(express.json())
 
 const port = process.env.port || 3000;
 
+app.listen(port);
+app.use('/',(req,res) =>{
+    res.send('Hello world')
+})
+
+/*
 const dburi = `mongodb+srv://donetica2020:Alwaysthesun2020@cluster0.y1vng.mongodb.net/marketica?retryWrites=true&w=majority`;
 
 mongoose.connect(dburi, { useNewUrlParser: true, useUnifiedTopology: true })
